@@ -1,0 +1,120 @@
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+
+import io.github.bonigarcia.wdm.WebDriverManager;
+
+public class New_Customer_Functionality {
+	
+	//Declaration of the object webdriver
+	public static WebDriver driver = null;
+	
+	
+	@BeforeAll
+	public static void beforeALL() throws InterruptedException {
+		//---------------------------
+		//Setup Environment  --------
+		//---------------------------
+		//Set environment variable
+		System.setProperty("webdriver.http.factory", "jdk-http-client");
+		
+		//WebDriverManager will setup the chrome browser 
+		WebDriverManager.chromedriver().setup();
+		
+		//Inicialize our virtual Browser
+		driver = new ChromeDriver();
+		
+		//loginHappyPath();
+	}
+	
+	@AfterAll
+	public static void afterAll() {
+		//driver.quit(); 
+		//driver.close();
+	}	
+	
+	public static void loginHappyPath() throws InterruptedException {
+		//Open the website
+		driver.get("https://demo.guru99.com/v4/index.php");
+		Thread.sleep(4000);
+		
+		//Close the iframe - Privacy Police
+		driver.switchTo().frame("gdpr-consent-notice").findElement(By.id("save")).click();
+		Thread.sleep(4000);
+		
+		//Enter UserID
+		driver.findElement(By.name("uid")).sendKeys("mngr483896");
+		
+		//Enter Password
+		driver.findElement(By.name("password")).sendKeys("azyjYry");
+		
+		//Click on Submit
+		driver.findElement(By.name("btnLogin")).click();
+	}
+	
+	@Test
+	@DisplayName("Check results on entering a valid information for all fields")
+	public void tc004() throws InterruptedException {
+		
+		//Pre Condition - Login()
+		loginHappyPath();
+		driver.manage().window().maximize();
+		
+		//----------------------
+		//Test Steps:
+		//----------------------
+		
+		//Click on New Customer
+		driver.findElement(By.linkText("New Customer")).click();
+		driver.get("https://demo.guru99.com/v4/manager/addcustomerpage.php");
+		
+		//Enter Customer Name
+		driver.findElement(By.name("name")).sendKeys("Adam");
+		
+		//Select Gender = Male
+		driver.findElement(By.xpath("/html/body/table/tbody/tr/td/table/tbody/tr[5]/td[2]/input[1]")).click();
+		
+		//Enter DOB
+		driver.findElement(By.id("dob")).sendKeys("01/01/1991");
+		
+		//Enter Address
+		driver.findElement(By.name("addr")).sendKeys("47 Testing Road");
+		
+		//Enter City
+		
+		
+		//Enter State
+		
+		
+		//Enter PIN 
+		
+		
+		//Enter Mobile Number
+		
+		
+		//Enter email
+		
+		
+		//Enter Password
+		
+		
+		//Click on Submit
+		
+		
+		//----------------------
+		//Check Results
+		//----------------------
+		
+		
+		
+	}
+	
+	
+	
+	
+	
+}
