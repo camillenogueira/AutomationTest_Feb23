@@ -1,4 +1,5 @@
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
@@ -22,6 +23,8 @@ public class Login_Functionality {
 	
 	//Declaration of the object webdriver
 	public static WebDriver driver = null;
+	public static String userID = "mngr483896";
+	
 	
 	@BeforeAll
 	public static void beforeALL() {
@@ -38,10 +41,11 @@ public class Login_Functionality {
 		driver = new ChromeDriver();
 	}
 	
-	/*@BeforeEach
-	public static void beforeEach() {
+	@BeforeEach
+	public void beforeEach() {
 		//block of code to be executed before each test case
-	}*/
+		 
+	}
 	
 	@AfterAll
 	public static void afterAll() {
@@ -52,6 +56,8 @@ public class Login_Functionality {
 	/*@AfterEach
 	public static void afterEach() {
 		//block of code to be executed after each test case
+		 * 
+		 * 
 	}*/
 	
 	
@@ -73,7 +79,7 @@ public class Login_Functionality {
 		Thread.sleep(4000);
 		
 		//Enter UserID
-		driver.findElement(By.name("uid")).sendKeys("mngr483896");
+		driver.findElement(By.name("uid")).sendKeys(userID);
 		
 		//Enter Password
 		driver.findElement(By.name("password")).sendKeys("azyjYry");
@@ -91,14 +97,42 @@ public class Login_Functionality {
 		
 		assertEquals(expectedResults,actualResults);
 		
+		System.out.println("TC001 - Test Passed!");
+		
 	}
 	
 	
 	@Test
 	@Order(2)
 	@DisplayName("Check response when a User ID is Empty & Login Button is pressed")
-	public void tc002() {
+	public void tc002() throws InterruptedException {
 		
+		//Test Steps
+		
+		//Open the URL GURU99
+		driver.get("https://demo.guru99.com/v4/index.php");
+		
+		/*//Close the iframe - Privacy Police
+		Thread.sleep(4000);
+		driver.switchTo().frame("gdpr-consent-notice").findElement(By.id("save")).click();
+		Thread.sleep(4000);*/
+		
+		//Leave UserID and password empty
+		
+		//Click on Submit
+		driver.findElement(By.name("btnLogin")).click();
+		
+		
+		//Check Results
+		String expectedResults = "User or Password is not valid";
+		String actualResults = driver.switchTo().alert().getText();
+		
+		//System.out.println(actualResults);
+		
+		assertEquals(expectedResults,actualResults);
+		//assertTrue(actualResults.equals(expectedResults));
+		
+		System.out.println("TC002 - Test Passed!");
 		
 	}
 	
