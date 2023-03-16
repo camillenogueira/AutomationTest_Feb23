@@ -1,3 +1,7 @@
+import static org.junit.Assert.assertEquals;
+
+import java.util.Random;
+
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
@@ -65,6 +69,25 @@ public class New_Customer_Functionality {
 		driver.manage().window().maximize();
 		
 		//----------------------
+		//Test Data & Expected Results
+		//----------------------
+		String customerName = "Kira";
+		String gender= "male";
+		String dob = "01/01/1991";
+		String address = "47 Testing Road";
+		String city = "Dublin";
+		String state = "Dublin";
+		String pin = "123456";
+		String mobileno = "1234567";
+		//Generating a random number
+		Random random = new Random();
+		int randomNumber = random.nextInt(10000);  //12345
+		String email = "kira."+randomNumber+"@gmail.com"; //kira.12345@gmail.com
+		System.out.println(email);
+		
+		String password = "1234567";
+		
+		//----------------------
 		//Test Steps:
 		//----------------------
 		
@@ -73,44 +96,62 @@ public class New_Customer_Functionality {
 		driver.get("https://demo.guru99.com/v4/manager/addcustomerpage.php");
 		
 		//Enter Customer Name
-		driver.findElement(By.name("name")).sendKeys("Adam");
+		driver.findElement(By.name("name")).sendKeys(customerName);
 		
 		//Select Gender = Male
 		driver.findElement(By.xpath("/html/body/table/tbody/tr/td/table/tbody/tr[5]/td[2]/input[1]")).click();
 		
 		//Enter DOB
-		driver.findElement(By.id("dob")).sendKeys("01/01/1991");
+		driver.findElement(By.id("dob")).sendKeys(dob);
 		
 		//Enter Address
-		driver.findElement(By.name("addr")).sendKeys("47 Testing Road");
+		driver.findElement(By.name("addr")).sendKeys(address);
 		
 		//Enter City
-		
+		driver.findElement(By.name("city")).sendKeys(city);
 		
 		//Enter State
-		
+		driver.findElement(By.name("state")).sendKeys(state);
 		
 		//Enter PIN 
-		
+		driver.findElement(By.name("pinno")).sendKeys(pin);
 		
 		//Enter Mobile Number
-		
+		driver.findElement(By.name("telephoneno")).sendKeys(mobileno);
 		
 		//Enter email
-		
+		driver.findElement(By.name("emailid")).sendKeys(email);
 		
 		//Enter Password
-		
+		driver.findElement(By.name("password")).sendKeys(password);
 		
 		//Click on Submit
+		driver.findElement(By.name("sub")).click();
 		
 		
 		//----------------------
 		//Check Results
 		//----------------------
+		//Checking the successfully message
+		String expectedResults = "Customer Registered Successfully!!!";
+		String actualResults = driver.findElement(By.cssSelector("#customer > tbody > tr:nth-child(1) > td > p")).getText();
+		assertEquals(expectedResults,actualResults);
 		
+		//Store the customer ID
+		String customerID = driver.findElement(By.xpath("//*[@id=\"customer\"]/tbody/tr[4]/td[2]")).getText();
+		System.out.println(customerID);
 		
+		//Checking the customer name
+		actualResults = driver.findElement(By.cssSelector("#customer > tbody > tr:nth-child(5) > td:nth-child(2)")).getText();
+		assertEquals(customerName, actualResults);
 		
+		//Check all fields
+		 ///homework
+		
+		//Check the email
+		actualResults = driver.findElement(By.cssSelector("#customer > tbody > tr:nth-child(13) > td:nth-child(2)")).getText();
+		assertEquals(email, actualResults);
+				
 	}
 	
 	
