@@ -1,0 +1,83 @@
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.support.ui.Select;
+
+import io.github.bonigarcia.wdm.WebDriverManager;
+
+public class New_Account_Functionality {
+
+	//Declaration of the object webdriver
+	public static WebDriver driver = null;
+	
+	
+	@BeforeAll
+	public static void beforeALL() throws InterruptedException {
+		//---------------------------
+		//Setup Environment  --------
+		//---------------------------
+		//Set environment variable
+		System.setProperty("webdriver.http.factory", "jdk-http-client");
+		
+		//WebDriverManager will setup the chrome browser 
+		WebDriverManager.chromedriver().setup();
+		
+		//Inicialize our virtual Browser
+		driver = new ChromeDriver();
+		
+		//loginHappyPath();
+	}
+	
+	@AfterAll
+	public static void afterAll() {
+		//driver.quit(); 
+		//driver.close();
+	}	
+	
+	public static void loginHappyPath() throws InterruptedException {
+		//Open the website
+		driver.get("https://demo.guru99.com/v4/index.php");
+		Thread.sleep(4000);
+		
+		//Close the iframe - Privacy Police
+		driver.switchTo().frame("gdpr-consent-notice").findElement(By.id("save")).click();
+		Thread.sleep(4000);
+		
+		//Enter UserID
+		driver.findElement(By.name("uid")).sendKeys("mngr483896");
+		
+		//Enter Password
+		driver.findElement(By.name("password")).sendKeys("azyjYry");
+		
+		//Click on Submit
+		driver.findElement(By.name("btnLogin")).click();
+	}
+	
+	@Test
+	public void tc013() throws InterruptedException {
+		
+		//Pre condition = Login Happy Path
+		loginHappyPath();
+		
+		//Click on New Account
+		driver.findElement(By.linkText("New Account"));
+		driver.get("https://demo.guru99.com/v4/manager/addAccount.php");
+		
+		//Enter Customer ID
+		driver.findElement(By.name("cusid")).sendKeys("19873");
+		
+		//Select Savings Account
+		//Find the list
+		WebElement accountTypeList = driver.findElement(By.name("selaccount"));
+		//Create Select object with a list we found
+		Select select = new Select(accountTypeList);
+		//select the option you want
+		select.selectByVisibleText("Current");
+		//select.selectByValue("Savings");
+		
+	}
+}
