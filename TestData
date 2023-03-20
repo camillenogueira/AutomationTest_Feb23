@@ -1,0 +1,125 @@
+import java.util.Random;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+
+public class TestData {
+
+	//Declaration of the object webdriver
+	public static WebDriver driver = null;
+	
+	//Declaration of Screenshot
+	public static MyScreenRecorder screenRecorder;
+	
+	//----------------------
+	//Test Data - Create Customer
+	//----------------------
+	public static String customerName = "Adam";
+	public static String gender= "male";
+	public static String dob = "01/01/1991";
+	public static String address = "47 Testing Road";
+	public static String city = "Dublin";
+	public static String state = "Dublin";
+	public static String pin = "123456";
+	public static String mobileno = "1234567";
+	//Generating a random number
+	public static Random random = new Random();
+	public static int randomNumber = random.nextInt(10000);  //12345
+	public static String email = "Adam."+randomNumber+"@gmail.com"; //kira.12345@gmail.com
+	public static String password = "1234567";
+	
+	//------------------------
+	//Test Data - Credentials
+	//------------------------
+	public static String userID_Manager = "mngr483896";
+	public static String password_Manager = "azyjYry";
+	public static String userID_customer = email;
+	public static String password_customer = password;
+	
+	//------------------------
+	//Test Data for Current Account
+	//------------------------
+	public static String inicialAmount_current = "600";
+	public static String accountType_current = "Current";
+	
+	//------------------------
+	//Test Data for Savings Account
+	//------------------------
+	public static String inicialAmount_savings = "700";
+	public static String accountType_savings = "Savings";
+	
+	public static String accountID = "119624";
+	
+	
+	
+	public static void preConditionLogin() throws InterruptedException {
+		//Open the website
+		driver.get("https://demo.guru99.com/v4/index.php");
+		Thread.sleep(4000);
+		
+		//Close the iframe - Privacy Police
+		driver.switchTo().frame("gdpr-consent-notice").findElement(By.id("save")).click();
+		Thread.sleep(4000);
+		
+		//Enter UserID
+		driver.findElement(By.name("uid")).sendKeys(userID_Manager);
+		
+		//Enter Password
+		driver.findElement(By.name("password")).sendKeys(password_Manager);
+		
+		//Click on Submit
+		driver.findElement(By.name("btnLogin")).click();
+	}
+	
+	public static String preConditionCreateCustomer() {
+		
+		
+		//----------------------
+		//Test Steps:
+		//----------------------
+		
+		//Click on New Customer
+		driver.findElement(By.linkText("New Customer")).click();
+		driver.get("https://demo.guru99.com/v4/manager/addcustomerpage.php");
+		
+		//Enter Customer Name
+		driver.findElement(By.name("name")).sendKeys(customerName);
+		
+		//Select Gender = Male
+		driver.findElement(By.xpath("/html/body/table/tbody/tr/td/table/tbody/tr[5]/td[2]/input[1]")).click();
+		
+		//Enter DOB
+		driver.findElement(By.id("dob")).sendKeys(dob);
+		
+		//Enter Address
+		driver.findElement(By.name("addr")).sendKeys(address);
+		
+		//Enter City
+		driver.findElement(By.name("city")).sendKeys(city);
+		
+		//Enter State
+		driver.findElement(By.name("state")).sendKeys(state);
+		
+		//Enter PIN 
+		driver.findElement(By.name("pinno")).sendKeys(pin);
+		
+		//Enter Mobile Number
+		driver.findElement(By.name("telephoneno")).sendKeys(mobileno);
+		
+		//Enter email
+		driver.findElement(By.name("emailid")).sendKeys(email);
+		
+		//Enter Password
+		driver.findElement(By.name("password")).sendKeys(password);
+		
+		//Click on Submit
+		driver.findElement(By.name("sub")).click();
+		
+		//Store the customer ID
+		String customerID = TestData.driver.findElement(By.xpath("//*[@id=\"customer\"]/tbody/tr[4]/td[2]")).getText();
+		
+		return customerID;
+	}
+	
+	
+}
