@@ -1,19 +1,21 @@
+import static org.junit.Assert.assertEquals;
+
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.Select;
+import java.time.format.DateTimeFormatter;
+import java.time.LocalDateTime;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
 
 public class New_Account_Functionality {
 
-	//Declaration of the object webdriver
-	public static WebDriver driver = null;
-	
 	
 	@BeforeAll
 	public static void beforeALL() throws InterruptedException {
@@ -27,7 +29,7 @@ public class New_Account_Functionality {
 		WebDriverManager.chromedriver().setup();
 		
 		//Inicialize our virtual Browser
-		driver = new ChromeDriver();
+		TestData.driver = new ChromeDriver();
 		
 		//loginHappyPath();
 	}
@@ -38,46 +40,66 @@ public class New_Account_Functionality {
 		//driver.close();
 	}	
 	
-	public static void loginHappyPath() throws InterruptedException {
-		//Open the website
-		driver.get("https://demo.guru99.com/v4/index.php");
-		Thread.sleep(4000);
-		
-		//Close the iframe - Privacy Police
-		driver.switchTo().frame("gdpr-consent-notice").findElement(By.id("save")).click();
-		Thread.sleep(4000);
-		
-		//Enter UserID
-		driver.findElement(By.name("uid")).sendKeys("mngr483896");
-		
-		//Enter Password
-		driver.findElement(By.name("password")).sendKeys("azyjYry");
-		
-		//Click on Submit
-		driver.findElement(By.name("btnLogin")).click();
-	}
 	
 	@Test
+	@DisplayName("Create an current account - happy path")
 	public void tc013() throws InterruptedException {
 		
 		//Pre condition = Login Happy Path
-		loginHappyPath();
+		TestData.preConditionLogin();
+		String customerID = TestData.preConditionCreateCustomer();
 		
 		//Click on New Account
-		driver.findElement(By.linkText("New Account"));
-		driver.get("https://demo.guru99.com/v4/manager/addAccount.php");
+		TestData.driver.findElement(By.linkText("New Account"));
+		TestData.driver.get("https://demo.guru99.com/v4/manager/addAccount.php");
 		
 		//Enter Customer ID
-		driver.findElement(By.name("cusid")).sendKeys("19873");
+		TestData.driver.findElement(By.name("cusid")).sendKeys(customerID);
 		
 		//Select Savings Account
 		//Find the list
-		WebElement accountTypeList = driver.findElement(By.name("selaccount"));
+		WebElement accountTypeList = TestData.driver.findElement(By.name("selaccount"));
 		//Create Select object with a list we found
 		Select select = new Select(accountTypeList);
 		//select the option you want
-		select.selectByVisibleText("Current");
+		select.selectByVisibleText(TestData.accountType_current);
 		//select.selectByValue("Savings");
 		
+		//Enter Inicial Deposit
+		TestData.driver.findElement(By.name("inideposit")).sendKeys(TestData.inicialAmount_current);
+		
+		//Click on Submit
+		TestData.driver.findElement(By.name("button2")).click();
+		
+		//Checking the expected Results
+		//Checking Successfully message
+		String expectedResult = "Account Generated Successfully!!!";
+		String actualResult = TestData.driver.findElement(By.cssSelector("#account > tbody > tr:nth-child(1) > td > p")).getText();
+		
+		assertEquals(expectedResult,actualResult);
+		
+		//AccountID
+		String accountID = TestData.driver.findElement(By.cssSelector("#account > tbody > tr:nth-child(4) > td:nth-child(2)")).getText();
+		System.out.println(accountID);
+		
+		//Checking CustomerID
+		expectedResult = customerID;
+		actualResult = TestData.driver.findElement(By.xpath("//*[@id=\"account\"]/tbody/tr[5]/td[2]")).getText();
+		assertEquals(expectedResult, actualResult);
+		
+		//Checking Customer Name
+		expectedResult = TestData.customerName;
+		actualResult = TestData.driver.findElement(By.cssSelector("#account > tbody > tr:nth-child(6) > td:nth-child(2)")).getText();
+		
+		//Checking the Date of Opening field
+		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+		LocalDateTime now = LocalDateTime.now();
+		System.out.println(dtf.format(now));
+		expectedResult = dtf.format(now);
+		actualResult = TestData.driver.findElement(By.cssSelector("#account > tbody > tr:nth-child(9) > td:nth-child(2)")).getText();
+		assertEquals(expectedResult,actualResult);
+		
+		
 	}
+	
 }
